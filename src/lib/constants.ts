@@ -50,6 +50,12 @@ export const challenges: Challenge[] = [
       <p>Selected color: <span id="selected-color">None</span></p>
     </main>
     <script>
+    // 1. Use plain JavaScript, example: (document.querySelector, addEventListener, getElementById).
+    //2. Colors should be generated dynamically from an array.
+    //3. Clicking a color box should instantly change the body background.
+    //4. The selected color name should be displayed in text.
+    //5. Use only minimal starter HTML — the color boxes are created in JS.
+
       // Here is your code
     </script>
   </body>
@@ -64,6 +70,69 @@ export const challenges: Challenge[] = [
     4.The selected color name should be displayed in text.
     5.Use only minimal starter HTML — the color boxes are created in JS.
 `,
+  },
+  {
+    id: "2",
+    name: "characterCounter.html",
+    content: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Live Character Counter</title>
+    <style>
+          body {
+        font-family: system-ui, sans-serif;
+        margin: 0;
+        padding: 2rem;
+        background: #f4f4f4;
+      }
+
+      textarea {
+        width: 100%;
+        padding: 0.5rem;
+        font-size: 1rem;
+      }
+
+      #counter {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      #counter.over {
+        color: red;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <h1>Character Counter</h1>
+      <textarea
+        id="message"
+        rows="4"
+        cols="40"
+        placeholder="Type something..."
+      ></textarea>
+      <p id="counter">50 characters remaining</p>
+    </main>
+    <script>
+      //1. Text area for typing.
+      //2. Display X characters remaining (or X over limit).
+      //3. Max length is 50 characters.
+      //4. Update instantly on every keystroke.
+      //5. Use DOM methods (querySelector, textContent) — no frameworks.
+
+      // Write your code below
+    </script>
+  </body>
+</html>
+`,
+    type: "file",
+    test: `1. Text area for typing.
+    2. Display X characters remaining (or X over limit).
+    3. Max length is 50 characters.
+    4. Update instantly on every keystroke.
+    5. Use DOM methods (querySelector, textContent) — no frameworks.`,
   },
 ];
 
