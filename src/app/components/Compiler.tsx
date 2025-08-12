@@ -2,10 +2,14 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { FileText, Folder, Loader2, Send } from "lucide-react";
+import { AlignLeft, FileText, Folder, Loader2, Send } from "lucide-react";
 import { CodeEditor } from "./CodeEditor";
 import axios from "axios";
 import { Challenge, challenges } from "@/lib/constants";
+
+import prettier from "prettier/standalone";
+import parserHtml from "prettier/plugins/html";
+import parserCss from "prettier/plugins/postcss";
 
 export function Compiler() {
   const [files] = useState<Challenge[]>(challenges);
@@ -60,6 +64,41 @@ export function Compiler() {
     }
   };
 
+  const handleFormat = async () => {
+    if (!selectedFile) return;
+
+    const extension = selectedFile.name.split(".").pop()?.toLowerCase();
+    const content = fileContents[selectedFileId] || "";
+
+    try {
+      if (extension === "html") {
+        const formattedHtml = await prettier.format(content, {
+          parser: "html",
+          plugins: [parserHtml],
+        });
+        setFileContents((prev) => ({
+          ...prev,
+          [selectedFileId]: formattedHtml,
+        }));
+        return;
+      }
+
+      if (extension === "css") {
+        const formattedCss = await prettier.format(content, {
+          parser: "css",
+          plugins: [parserCss],
+        });
+        setFileContents((prev) => ({
+          ...prev,
+          [selectedFileId]: formattedCss,
+        }));
+        return;
+      }
+    } catch (error) {
+      console.error("Format error:", error);
+    }
+  };
+
   const getFileIcon = (fileName: string) => {
     const extension = fileName.split(".").pop()?.toLowerCase();
     switch (extension) {
@@ -74,6 +113,32 @@ export function Compiler() {
       default:
         return "📄";
     }
+  };
+
+  const getPreviewContent = () => {
+    if (!selectedFile) return "";
+
+    const extension = selectedFile.name.split(".").pop()?.toLowerCase();
+    const content = fileContents[selectedFileId] || "";
+
+    if (extension === "html") {
+      return content;
+    }
+
+    if (extension === "css") {
+      return `<!doctype html>\n<html>\n  <head>\n    <meta charset=\"utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n    <style>\n${content}\n    </style>\n  </head>\n  <body>\n  </body>\n</html>`;
+    }
+
+    if (extension === "js") {
+      return `<!doctype html>\n<html>\n  <head>\n    <meta charset=\"utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n  </head>\n  <body>\n    <div id=\"app\"></div>\n    <script>\n${content}\n    </script>\n  </body>\n</html>`;
+    }
+
+    // Fallback: render as plain text inside a pre tag
+    const escaped = content
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;");
+    return `<!doctype html>\n<html>\n  <head>\n    <meta charset=\"utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n    <style>body{font-family: ui-sans-serif, system-ui, sans-serif; padding: 16px;}</style>\n  </head>\n  <body>\n    <pre>${escaped}</pre>\n  </body>\n</html>`;
   };
 
   return (
@@ -123,6 +188,15 @@ export function Compiler() {
               </div>
               <div className="flex-1"></div>
               <Button
+                onClick={handleFormat}
+                variant="ghost"
+                size="sm"
+                className="m-2 text-gray-300 hover:text-white hover:bg-gray-700"
+              >
+                <AlignLeft />
+                Format
+              </Button>
+              <Button
                 onClick={handleSave}
                 variant="ghost"
                 size="sm"
@@ -132,7 +206,7 @@ export function Compiler() {
                 {loading ? (
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 ) : (
-                  <Send className="w-4 h-4 mr-2" />
+                  <Send />
                 )}
                 Send
               </Button>
@@ -141,29 +215,40 @@ export function Compiler() {
         </div>
 
         {/* Editor Area */}
-        <div className="flex-1 p-4">
-          {selectedFile ? (
-            <CodeEditor
-              value={fileContents[selectedFileId] || ""}
-              onChange={(value: string | undefined) =>
-                handleContentChange(value!)
-              }
-            />
-          ) : (
-            <div className="flex items-center justify-center h-full text-gray-500">
-              <div className="text-center">
-                <FileText className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                <p>Select a file to start editing</p>
+        <div className="flex-1 p-4 flex">
+          <div className="flex-1">
+            {selectedFile ? (
+              <CodeEditor
+                value={fileContents[selectedFileId] || ""}
+                onChange={(value: string | undefined) =>
+                  handleContentChange(value!)
+                }
+              />
+            ) : (
+              <div className="flex items-center justify-center h-full text-gray-500">
+                <div className="text-center">
+                  <FileText className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                  <p>Select a file to start editing</p>
+                </div>
               </div>
-            </div>
-          )}
-          {result && (
-            <>
-              <div>Success: {result.passed} ✅</div>
-              <div>Failed: {result.failed} ❌</div>
-            </>
-          )}
+            )}
+          </div>
+          <div className="flex-1 max-h-[600px] bg-gray-800 border border-gray-700 rounded overflow-hidden">
+            <iframe
+              height={600}
+              title="Preview"
+              className="w-full h-full bg-white"
+              sandbox="allow-scripts allow-modals"
+              srcDoc={getPreviewContent()}
+            />
+          </div>
         </div>
+        {result && (
+          <>
+            <div>Success: {result.passed} ✅</div>
+            <div>Failed: {result.failed} ❌</div>
+          </>
+        )}
       </div>
     </div>
   );

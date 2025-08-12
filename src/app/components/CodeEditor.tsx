@@ -27,7 +27,7 @@ export const CodeEditor = ({
   return (
     <Editor
       value={value}
-      defaultLanguage="typescript"
+      defaultLanguage="html"
       onChange={onChange}
       theme="vs-dark"
       height={600}
