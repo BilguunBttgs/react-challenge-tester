@@ -7,7 +7,6 @@ import { CodeEditor } from "./CodeEditor";
 import axios from "axios";
 import { Challenge, challenges } from "@/lib/constants";
 
-// Create a button that increases a counter when clicked.
 export function Compiler() {
   const [files] = useState<Challenge[]>(challenges);
 

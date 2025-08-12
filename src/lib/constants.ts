@@ -148,6 +148,11 @@ describe("TodoApp", () => {
     // 4. Display the number of incomplete todos at the top.
     // 5. Bonus: Clear completed todos with a button.
 
+    // Test Requirements
+    // 1. Input placeholder must be "add a todo"
+    // 2. Add button must have "Add" text
+    // 3. Clear completed buttom must have "Clear completed" text
+
 import React, { useState } from "react";
 
 export default function TodoApp() {
