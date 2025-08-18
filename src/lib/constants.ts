@@ -134,6 +134,50 @@ export const challenges: Challenge[] = [
     4. Update instantly on every keystroke.
     5. Use DOM methods (querySelector, textContent) — no frameworks.`,
   },
+  {
+    id: "3",
+    name: "Counter.jsx",
+    test: `import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import Counter from './Counter';
+
+describe('Counter component', () => {
+  test('renders initial count as 0', () => {
+    render(<Counter />);
+    const counterText = screen.getByText(/Count: 0/i);
+    expect(counterText).toBeInTheDocument();
+  });
+
+  test('renders an "Increase" button', () => {
+    render(<Counter />);
+    const button = screen.getByRole('button', { name: /increase/i });
+    expect(button).toBeInTheDocument();
+  });
+
+  test('increments count by 1 when "Increase" button is clicked', () => {
+    render(<Counter />);
+    const button = screen.getByRole('button', { name: /increase/i });
+    fireEvent.click(button);
+    const updatedText = screen.getByText(/Count: 1/i);
+    expect(updatedText).toBeInTheDocument();
+  });
+
+});
+`,
+    content: `function Counter() {
+  const [count, setCount] = React.useState(0);
+
+  return (
+    <div>
+      <h2>Count: {count}</h2>
+      <button onClick={() => setCount(count + 1)}>Increase</button>
+    </div>
+  );
+}
+
+render(<Counter label="Counter" />) // !Dont remove or change!`,
+    type: "file",
+  },
 ];
 
 // export const challenges: Challenge[] = [

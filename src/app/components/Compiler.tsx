@@ -10,6 +10,7 @@ import { Explorer } from "@/app/components/Explorer";
 import { TopBar } from "@/app/components/TopBar";
 import { EditorPane } from "@/app/components/EditorPane";
 import { PreviewPane } from "@/app/components/PreviewPane";
+import { getFileType } from "@/utils/fileTypes";
 
 export function Compiler() {
   const {
@@ -66,10 +67,11 @@ export function Compiler() {
           onSend={handleSave}
           isSending={loading}
         />
-        <div className="flex-1 p-4 flex">
+        <div className="flex-1 p-4 flex max-w-7xl">
           <div className="flex-1">
             {selectedFile ? (
               <EditorPane
+                fileType={getFileType(selectedFile.name)}
                 value={fileContents[selectedFileId] || ""}
                 onChange={(value: string) => handleContentChange(value)}
               />

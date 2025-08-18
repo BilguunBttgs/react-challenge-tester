@@ -5,9 +5,17 @@ import { CodeEditor } from "@/app/components";
 export function EditorPane({
   value,
   onChange,
+  fileType,
 }: {
   value: string;
+  fileType: string;
   onChange: (value: string) => void;
 }) {
-  return <CodeEditor value={value} onChange={(v) => onChange(v ?? "")} />;
+  return (
+    <CodeEditor
+      fileType={fileType}
+      value={value}
+      onChange={(v) => onChange(v ?? "")}
+    />
+  );
 }

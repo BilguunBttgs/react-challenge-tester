@@ -5,9 +5,11 @@ import { useEffect } from "react";
 export const CodeEditor = ({
   value,
   onChange,
+  fileType,
 }: {
   value: string;
   onChange: (_value: string | undefined) => void;
+  fileType: string;
 }) => {
   const monaco = useMonaco();
 
@@ -27,7 +29,7 @@ export const CodeEditor = ({
   return (
     <Editor
       value={value}
-      defaultLanguage="html"
+      defaultLanguage={fileType === "jsx" ? "typescript" : "html"}
       onChange={onChange}
       theme="vs-dark"
       height={600}
